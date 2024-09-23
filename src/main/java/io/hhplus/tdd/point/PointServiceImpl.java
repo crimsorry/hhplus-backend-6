@@ -5,6 +5,8 @@ import io.hhplus.tdd.database.UserPointTable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class PointServiceImpl implements PointService {
@@ -42,6 +44,12 @@ public class PointServiceImpl implements PointService {
         userPoint = userPointRepository.insertOrUpdate(userId, updatedPoint);
         pointHistoryRepository.insert(userId, amount, TransactionType.USE, System.currentTimeMillis());
         return userPoint;
+    }
+
+    /* 유저 포인트 충전/이용 조회 */
+    @Override
+    public List<PointHistory> chargeUsePoints(long userId) {
+        return pointHistoryRepository.selectAllByUserId(userId);
     }
 
 
