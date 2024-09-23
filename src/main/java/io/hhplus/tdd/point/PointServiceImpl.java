@@ -15,11 +15,17 @@ public class PointServiceImpl implements PointService {
     @Override
     public UserPoint chargePoints(long userId, long amount) {
         UserPoint userPoint = userPointRepository.findById(userId);
+
         long updatedPoint = userPoint.point() + amount;
 
         userPoint = userPointRepository.insertOrUpdate(userId, updatedPoint);
         pointHistoryRepository.insert(userId, amount, TransactionType.CHARGE, System.currentTimeMillis());
+        return userPoint;
+    }
 
+    @Override
+    public UserPoint getPoints(long userId) {
+        UserPoint userPoint = userPointRepository.findById(userId);
         return userPoint;
     }
 

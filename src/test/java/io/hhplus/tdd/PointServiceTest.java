@@ -47,5 +47,22 @@ public class PointServiceTest {
         verify(pointHistoryRepository).insert(eq(userId), eq(pointCharge), eq(TransactionType.CHARGE), anyLong());
     }
 
+    @Test
+    public void 유저_포인트_조회_검증(){
+        // given
+        long userId = 1L;
+        long point = 100L;
+        UserPoint userPoint = new UserPoint(userId, point, System.currentTimeMillis());
+
+        // when
+        when(userPointRepository.findById(userId)).thenReturn(userPoint);
+
+        // then
+        UserPoint result = pointService.getPoints(userId);
+
+        // 결과 검증
+        assertEquals(point, result.point());
+    }
+
 
 }
