@@ -64,5 +64,27 @@ public class PointServiceTest {
         assertEquals(point, result.point());
     }
 
+    @Test
+    public void 유저_포인트_이용_검증(){
+        // given
+        long userId = 1L;
+        long point = 600L;
+        long pointUse = 400L;
+        UserPoint userPoint = new UserPoint(userId, point, System.currentTimeMillis());
+        UserPoint userPointUse = new UserPoint(userId, point - pointUse, System.currentTimeMillis());
+
+        // when
+        when(userPointRepository.findById(userId)).thenReturn(userPoint);
+        when(userPointRepository.insertOrUpdate(userId, point - pointUse)).thenReturn(userPointUse);
+
+        // then
+        UserPoint result = pointService.usePoints(userId, pointUse);
+
+        // 결과 검증
+        assertEquals(point - pointUse, result.point()); // 유저 포인트 합계 검증
+        verify(userPointRepository).insertOrUpdate(userId, point - pointUse); // 메서드 호출 검증
+        verify(pointHistoryRepository).insert(eq(userId), eq(pointUse), eq(TransactionType.USE), anyLong());
+    }
+
 
 }

@@ -1,6 +1,6 @@
 package io.hhplus.tdd;
 
-public record ErrorResponse(
+public record ErrorResponse (
         String code,
         String message
 ) {
