@@ -151,5 +151,22 @@ public class PointServiceTest {
         verify(pointHistoryRepository).selectAllByUserId(userId);
     }
 
+    /* TODO: 1. 포인트 부족 검증 */
+
+    /* TODO: 1. 유저 포인트 충전 한도 초과 검증 */
+
+    /* TODO: 2. 동시성 제어 - 유저_포인트_충전_사용_조회_검증 */
+
+    /*
+    * TODO: 3. 존재하지 않는 유저 검증 -
+    * 유저 존재하지 않는 경우 amount 0 추가.
+    * 유저가 없어도 list 호출이 되지만 실사용 서비스처럼 개발하기 위해 추가.
+    * history 추가 X. > 아니면 회원가입 축하 메세지? 200 포인트 충전 시켜서 history 에 충전으로 남기기... (고민)
+    * */
+
+    /* TODO: 3. 포인트 충전 시 유저 존재 X */
+
+    /* TODO: 3. 포인트 사용 시 유저 존재 X */
+
 
 }
