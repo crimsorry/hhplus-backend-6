@@ -7,8 +7,8 @@ public record UserPoint(
 ) {
 
     public UserPoint {
-        if(point <= 0){
-            throw new IllegalArgumentException("포인트 금액이 0 이하입니다.");
+        if(point < 0){
+            throw new IllegalArgumentException("포인트 금액이 음수 입니다.");
         }
     }
 

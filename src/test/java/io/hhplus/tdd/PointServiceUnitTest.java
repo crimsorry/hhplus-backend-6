@@ -17,7 +17,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class PointServiceTest {
+public class PointServiceUnitTest {
 
     @InjectMocks
     private PointServiceImpl pointService;
@@ -234,7 +234,7 @@ public class PointServiceTest {
             new UserPoint(userId, point, System.currentTimeMillis());
         });
 
-        assertEquals("포인트 금액이 0 이하입니다.", exception.getMessage());
+        assertEquals("포인트 금액이 음수 입니다.", exception.getMessage());
     }
 
 
