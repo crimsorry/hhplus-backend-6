@@ -11,10 +11,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class PointServiceTest {
@@ -151,9 +151,92 @@ public class PointServiceTest {
         verify(pointHistoryRepository).selectAllByUserId(userId);
     }
 
-    /* TODO: 1. 포인트 부족 검증 */
+    @Test
+    public void 유저_포인트_사용_부족_검증(){
+        // given
+        long userId = 1L;
+        long point = 200L;
+        long pointUse = 300L;
+        UserPoint userPoint = new UserPoint(userId, point, System.currentTimeMillis());
 
-    /* TODO: 1. 유저 포인트 충전 한도 초과 검증 */
+        // when
+        when(userPointRepository.findById(userId)).thenReturn(userPoint);
+
+        // then
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            pointService.usePoints(userId, pointUse);
+        });
+
+        // 결과 검증
+        assertEquals("포인트가 부족합니다.", exception.getMessage());
+        verify(userPointRepository, never()).insertOrUpdate(userId, point - pointUse);
+    }
+
+    /*
+    * 999,999 포인트 초과 보유 불가
+    * */
+    @Test
+    public void 유저_포인트_충전_한도_초과_검증(){
+        // given
+        long userId = 1L;
+        long point = 900000L;
+        long pointCharge = 100000L;
+        UserPoint userPoint = new UserPoint(userId, point, System.currentTimeMillis());
+
+        // when
+        when(userPointRepository.findById(userId)).thenReturn(userPoint);
+
+        // then
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            pointService.chargePoints(userId, pointCharge);
+        });
+
+        // 결과 검증
+        assertEquals("999,999 포인트 보유 한도 초과입니다.", exception.getMessage());
+        verify(userPointRepository, never()).insertOrUpdate(userId, point + pointCharge);
+    }
+
+    /*
+     * 500,000 포인트 초과 사용 불가
+     * */
+    @Test
+    public void 유저_포인트_사용_한도_초과_검증(){
+        // given
+        long userId = 1L;
+        long point = 900000L;
+        long pointUse = 600000L;
+        UserPoint userPoint = new UserPoint(userId, point, System.currentTimeMillis());
+
+        // when
+        when(userPointRepository.findById(userId)).thenReturn(userPoint);
+
+        // then
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            pointService.usePoints(userId, pointUse);
+        });
+
+        // 결과 검증
+        assertEquals("500,000 포인트 사용 한도 초과입니다.", exception.getMessage());
+        verify(userPointRepository, never()).insertOrUpdate(userId, point - pointUse);
+    }
+
+    /*
+     * 음수 포인트 사용/충전 불가
+     * */
+    @Test
+    public void 유저_포인트_사용_충전_유효성_검증() {
+        // given
+        long userId = 1L;
+        long point = -100L;
+
+        // when & then
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            new UserPoint(userId, point, System.currentTimeMillis());
+        });
+
+        assertEquals("포인트 금액이 0 이하입니다.", exception.getMessage());
+    }
+
 
     /* TODO: 2. 동시성 제어 - 유저_포인트_충전_사용_조회_검증 */
 
