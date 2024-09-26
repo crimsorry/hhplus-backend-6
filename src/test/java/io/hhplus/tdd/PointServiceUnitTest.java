@@ -5,7 +5,10 @@ import io.hhplus.tdd.point.entities.UserPoint;
 import io.hhplus.tdd.point.entities.TransactionType;
 import io.hhplus.tdd.point.interfaces.repository.PointHistoryRepository;
 import io.hhplus.tdd.point.interfaces.repository.UserPointRepository;
+import io.hhplus.tdd.point.usecase.ConcurrencyManager;
 import io.hhplus.tdd.point.usecase.PointServiceImpl;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -14,6 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.locks.Lock;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -33,6 +37,23 @@ public class PointServiceUnitTest {
     @Mock
     private PointHistoryRepository pointHistoryRepository;
 
+    @Mock
+    private ConcurrencyManager concurrencyManager;
+
+    @Mock
+    private Lock lock;
+
+    public void beforeLock(long userId) {
+        when(concurrencyManager.getUserLock(userId)).thenReturn(lock);
+        doNothing().when(lock).lock();
+        doNothing().when(lock).unlock();
+    }
+
+    public void afterLock() {
+        verify(lock).lock();
+        verify(lock).unlock();
+    }
+
     @Test
     public void 유저_포인트_충전_성공_검증() {
         // Given
@@ -41,6 +62,7 @@ public class PointServiceUnitTest {
         long pointCharge = 400L;
         UserPoint userPoint = new UserPoint(userId, point, System.currentTimeMillis());
         UserPoint userPointUpdate = new UserPoint(userId, point + pointCharge, System.currentTimeMillis());
+        beforeLock(userId);
 
         // when
         when(userPointRepository.findById(userId)).thenReturn(userPoint);
@@ -53,6 +75,7 @@ public class PointServiceUnitTest {
         assertEquals(point + pointCharge, result.point()); // 유저 포인트 합계 검증
         verify(userPointRepository).insertOrUpdate(userId, point + pointCharge); // 메서드 호출 검증
         verify(pointHistoryRepository).insert(eq(userId), eq(pointCharge), eq(TransactionType.CHARGE), anyLong());
+        afterLock();
     }
 
     @Test
@@ -80,6 +103,7 @@ public class PointServiceUnitTest {
         long pointUse = 400L;
         UserPoint userPoint = new UserPoint(userId, point, System.currentTimeMillis());
         UserPoint userPointUse = new UserPoint(userId, point - pointUse, System.currentTimeMillis());
+        beforeLock(userId);
 
         // when
         when(userPointRepository.findById(userId)).thenReturn(userPoint);
@@ -92,6 +116,7 @@ public class PointServiceUnitTest {
         assertEquals(point - pointUse, result.point()); // 유저 포인트 합계 검증
         verify(userPointRepository).insertOrUpdate(userId, point - pointUse); // 메서드 호출 검증
         verify(pointHistoryRepository).insert(eq(userId), eq(pointUse), eq(TransactionType.USE), anyLong());
+        afterLock();
     }
 
     @Test
@@ -102,6 +127,7 @@ public class PointServiceUnitTest {
         long pointCharge = 400L;
         UserPoint userPoint = new UserPoint(userId, point, System.currentTimeMillis());
         UserPoint userPointUpdate = new UserPoint(userId, point + pointCharge, System.currentTimeMillis());
+        beforeLock(userId);
 
         List<PointHistory> pointHistoryListExpect = new ArrayList<>();
         pointHistoryListExpect.add(new PointHistory(1L, userId, pointCharge, TransactionType.CHARGE, System.currentTimeMillis()));
@@ -123,6 +149,7 @@ public class PointServiceUnitTest {
         verify(userPointRepository).insertOrUpdate(userId, point + pointCharge);
         verify(pointHistoryRepository).insert(eq(userId), eq(pointCharge), eq(TransactionType.CHARGE), anyLong());
         verify(pointHistoryRepository).selectAllByUserId(userId);
+        afterLock();
     }
 
     @Test
@@ -133,6 +160,7 @@ public class PointServiceUnitTest {
         long pointUse = 200L;
         UserPoint userPointAfterCharge = new UserPoint(userId, point, System.currentTimeMillis());
         UserPoint userPointAfterUse = new UserPoint(userId, point - pointUse, System.currentTimeMillis());
+        beforeLock(userId);
 
         List<PointHistory> pointHistoryListExpect = new ArrayList<>();
         pointHistoryListExpect.add(new PointHistory(1L, userId, pointUse, TransactionType.USE, System.currentTimeMillis()));
@@ -154,6 +182,7 @@ public class PointServiceUnitTest {
         verify(userPointRepository).insertOrUpdate(userId, point - pointUse);
         verify(pointHistoryRepository).insert(eq(userId), eq(pointUse), eq(TransactionType.USE), anyLong());
         verify(pointHistoryRepository).selectAllByUserId(userId);
+        afterLock();
     }
 
     @Test
@@ -163,6 +192,7 @@ public class PointServiceUnitTest {
         long point = 200L;
         long pointUse = 300L;
         UserPoint userPoint = new UserPoint(userId, point, System.currentTimeMillis());
+        beforeLock(userId);
 
         // when
         when(userPointRepository.findById(userId)).thenReturn(userPoint);
@@ -175,6 +205,7 @@ public class PointServiceUnitTest {
         // 결과 검증
         assertEquals("포인트가 부족합니다.", exception.getMessage());
         verify(userPointRepository, never()).insertOrUpdate(userId, point - pointUse);
+        afterLock();
     }
 
     /*
@@ -187,6 +218,7 @@ public class PointServiceUnitTest {
         long point = 900000L;
         long pointCharge = 100000L;
         UserPoint userPoint = new UserPoint(userId, point, System.currentTimeMillis());
+        beforeLock(userId);
 
         // when
         when(userPointRepository.findById(userId)).thenReturn(userPoint);
@@ -199,6 +231,7 @@ public class PointServiceUnitTest {
         // 결과 검증
         assertEquals("999,999 포인트 보유 한도 초과입니다.", exception.getMessage());
         verify(userPointRepository, never()).insertOrUpdate(userId, point + pointCharge);
+        afterLock();
     }
 
     /*
@@ -211,6 +244,7 @@ public class PointServiceUnitTest {
         long point = 900000L;
         long pointUse = 600000L;
         UserPoint userPoint = new UserPoint(userId, point, System.currentTimeMillis());
+        beforeLock(userId);
 
         // when
         when(userPointRepository.findById(userId)).thenReturn(userPoint);
@@ -223,6 +257,7 @@ public class PointServiceUnitTest {
         // 결과 검증
         assertEquals("500,000 포인트 사용 한도 초과입니다.", exception.getMessage());
         verify(userPointRepository, never()).insertOrUpdate(userId, point - pointUse);
+        afterLock();
     }
 
     /*
