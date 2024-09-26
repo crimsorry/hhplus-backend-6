@@ -1,6 +1,8 @@
-package io.hhplus.tdd.point;
+package io.hhplus.tdd.point.interfaces;
 
-import io.hhplus.tdd.database.UserPointTable;
+import io.hhplus.tdd.point.entities.PointHistory;
+import io.hhplus.tdd.point.entities.UserPoint;
+import io.hhplus.tdd.point.usecase.PointService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

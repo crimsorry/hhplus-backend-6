@@ -1,6 +1,11 @@
 package io.hhplus.tdd;
 
-import io.hhplus.tdd.point.*;
+import io.hhplus.tdd.point.entities.PointHistory;
+import io.hhplus.tdd.point.entities.UserPoint;
+import io.hhplus.tdd.point.interfaces.repository.PointHistoryRepository;
+import io.hhplus.tdd.point.interfaces.repository.UserPointRepository;
+import io.hhplus.tdd.point.usecase.PointServiceImpl;
+import io.hhplus.tdd.point.usecase.PointWorker;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +16,6 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;

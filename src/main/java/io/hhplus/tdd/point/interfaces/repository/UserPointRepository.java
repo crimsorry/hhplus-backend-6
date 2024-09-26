@@ -1,4 +1,6 @@
-package io.hhplus.tdd.point;
+package io.hhplus.tdd.point.interfaces.repository;
+
+import io.hhplus.tdd.point.entities.UserPoint;
 
 public interface UserPointRepository {
     UserPoint findById(long userId);

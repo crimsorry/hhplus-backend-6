@@ -1,6 +1,11 @@
 package io.hhplus.tdd;
 
-import io.hhplus.tdd.point.*;
+import io.hhplus.tdd.point.entities.PointHistory;
+import io.hhplus.tdd.point.entities.UserPoint;
+import io.hhplus.tdd.point.entities.TransactionType;
+import io.hhplus.tdd.point.interfaces.repository.PointHistoryRepository;
+import io.hhplus.tdd.point.interfaces.repository.UserPointRepository;
+import io.hhplus.tdd.point.usecase.PointServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

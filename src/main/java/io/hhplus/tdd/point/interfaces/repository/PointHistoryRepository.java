@@ -1,4 +1,7 @@
-package io.hhplus.tdd.point;
+package io.hhplus.tdd.point.interfaces.repository;
+
+import io.hhplus.tdd.point.entities.TransactionType;
+import io.hhplus.tdd.point.entities.PointHistory;
 
 import java.util.List;
 

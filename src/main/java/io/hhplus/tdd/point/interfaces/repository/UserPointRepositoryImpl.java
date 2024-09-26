@@ -1,6 +1,7 @@
-package io.hhplus.tdd.point;
+package io.hhplus.tdd.point.interfaces.repository;
 
 import io.hhplus.tdd.database.UserPointTable;
+import io.hhplus.tdd.point.entities.UserPoint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 

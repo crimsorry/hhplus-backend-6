@@ -1,14 +1,15 @@
-package io.hhplus.tdd.point;
+package io.hhplus.tdd.point.usecase;
 
-import io.hhplus.tdd.database.PointHistoryTable;
-import io.hhplus.tdd.database.UserPointTable;
+import io.hhplus.tdd.point.interfaces.repository.PointHistoryRepository;
+import io.hhplus.tdd.point.entities.TransactionType;
+import io.hhplus.tdd.point.interfaces.repository.UserPointRepository;
+import io.hhplus.tdd.point.entities.PointHistory;
+import io.hhplus.tdd.point.entities.UserPoint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 @Service
 @RequiredArgsConstructor

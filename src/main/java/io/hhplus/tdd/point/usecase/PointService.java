@@ -1,7 +1,7 @@
-package io.hhplus.tdd.point;
+package io.hhplus.tdd.point.usecase;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import io.hhplus.tdd.point.entities.PointHistory;
+import io.hhplus.tdd.point.entities.UserPoint;
 
 import java.util.List;
 
