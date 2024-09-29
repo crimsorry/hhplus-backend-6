@@ -1,4 +1,6 @@
-package io.hhplus.tdd.point.usecase;
+package io.hhplus.tdd;
+
+import io.hhplus.tdd.point.usecase.PointService;
 
 import java.util.concurrent.CountDownLatch;
 

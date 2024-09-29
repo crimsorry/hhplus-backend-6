@@ -5,7 +5,6 @@ import io.hhplus.tdd.point.entities.UserPoint;
 import io.hhplus.tdd.point.interfaces.repository.PointHistoryRepository;
 import io.hhplus.tdd.point.interfaces.repository.UserPointRepository;
 import io.hhplus.tdd.point.usecase.PointServiceImpl;
-import io.hhplus.tdd.point.usecase.PointWorker;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -96,6 +95,7 @@ public class PointServiceIntegrationTest {
         long pointUse = 50L;
         long pointUse2 = 250L;
         long pointUse3 = 300L;
+        long sumPoint = point + pointCharge + pointCharge2 + pointUse + pointUse2 + pointUse3;
         int totalTasks = 5; // 작업 thread
 
         CountDownLatch latch = new CountDownLatch(totalTasks);
@@ -115,7 +115,7 @@ public class PointServiceIntegrationTest {
         // then
         List<PointHistory> result = pointService.chargeUsePoints(userId);
         assertEquals(6, result.size());
-        assertEquals(point + pointCharge + pointCharge2 + pointUse + pointUse2 + pointUse3, result.get(0).amount() + result.get(1).amount() + result.get(2).amount() + result.get(3).amount() + result.get(4).amount() + result.get(5).amount());
+        assertEquals(sumPoint, result.get(0).amount() + result.get(1).amount() + result.get(2).amount() + result.get(3).amount() + result.get(4).amount() + result.get(5).amount());
 
         // 스레드 풀 종료
         executorService.shutdown();

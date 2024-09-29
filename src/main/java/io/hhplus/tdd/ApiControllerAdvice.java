@@ -15,9 +15,9 @@ class ApiControllerAdvice extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(500).body(new ErrorResponse("500", "에러가 발생했습니다."));
     }
 
-    // IllegalArgumentException 발생 시 처리
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<ErrorResponse> handleIllegalArgumentException(IllegalArgumentException e) {
+    // CustomPointException 발생 시 처리
+    @ExceptionHandler(CustomPointException.class)
+    public ResponseEntity<ErrorResponse> handleCustomPointException(CustomPointException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new ErrorResponse("400", e.getMessage())); // 에러 메시지를 그대로 반환
     }

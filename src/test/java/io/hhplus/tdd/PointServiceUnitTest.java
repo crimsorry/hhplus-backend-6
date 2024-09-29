@@ -7,8 +7,6 @@ import io.hhplus.tdd.point.interfaces.repository.PointHistoryRepository;
 import io.hhplus.tdd.point.interfaces.repository.UserPointRepository;
 import io.hhplus.tdd.point.usecase.ConcurrencyManager;
 import io.hhplus.tdd.point.usecase.PointServiceImpl;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -198,12 +196,13 @@ public class PointServiceUnitTest {
         when(userPointRepository.findById(userId)).thenReturn(userPoint);
 
         // then
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+        Exception exception = assertThrows(CustomPointException.class, () -> {
             pointService.usePoints(userId, pointUse);
         });
 
         // 결과 검증
         assertEquals("포인트가 부족합니다.", exception.getMessage());
+        // exception 발생으로 해당 메소드가 호출되지 않았기 때문에 never() 추가.
         verify(userPointRepository, never()).insertOrUpdate(userId, point - pointUse);
         afterLock();
     }
@@ -224,7 +223,7 @@ public class PointServiceUnitTest {
         when(userPointRepository.findById(userId)).thenReturn(userPoint);
 
         // then
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+        Exception exception = assertThrows(CustomPointException.class, () -> {
             pointService.chargePoints(userId, pointCharge);
         });
 
@@ -250,7 +249,7 @@ public class PointServiceUnitTest {
         when(userPointRepository.findById(userId)).thenReturn(userPoint);
 
         // then
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+        Exception exception = assertThrows(CustomPointException.class, () -> {
             pointService.usePoints(userId, pointUse);
         });
 
@@ -270,7 +269,7 @@ public class PointServiceUnitTest {
         long point = -100L;
 
         // when & then
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+        Exception exception = assertThrows(CustomPointException.class, () -> {
             new UserPoint(userId, point, System.currentTimeMillis());
         });
 
