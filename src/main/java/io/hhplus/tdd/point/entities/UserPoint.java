@@ -1,5 +1,7 @@
 package io.hhplus.tdd.point.entities;
 
+import io.hhplus.tdd.CustomPointException;
+
 public record UserPoint(
         long id,
         long point,
@@ -8,7 +10,7 @@ public record UserPoint(
 
     public UserPoint {
         if(point < 0){
-            throw new IllegalArgumentException("포인트 금액이 음수 입니다.");
+            throw new CustomPointException("포인트 금액이 음수 입니다.");
         }
     }
 
